@@ -2,8 +2,11 @@ import { Grid } from '@material-ui/core';
 import Product from '../Components/Product';
 import { useContext, useEffect } from 'react';
 import { DataContext } from '../Components/DataContext';
+import axios from "axios";
+import { server } from "../Config";
+import * as path from "path";
 
-export default function Home() {
+export default function Home( ) {
     const dataContext = useContext(DataContext);
     const { allProducts, setAllProducts } = dataContext;
     const renderedProducts = allProducts.map((product) => {

@@ -48,6 +48,7 @@ const useStyles = makeStyles((theme) => ({
 const Product = ({ product }) => {
     const dataContext = useContext(DataContext);
     const { addProductToCart } = dataContext;
+
     const classes = useStyles();
 
     return (
@@ -78,16 +79,6 @@ const Product = ({ product }) => {
             <CardActions className={classes.interactions}>
                 <Typography className={classes.productStatus}>
                     Price: ${product.price}
-                </Typography>
-                <Typography
-                    className={classes.productStatus}
-                    style={{ color: product.stock ? '' : 'red' }}
-                >
-                    {product.stock ? (
-                        `Stock: ${product.stock}`
-                    ) : (
-                        <span className={classes.warning}>Out of Stock!</span>
-                    )}
                 </Typography>
                 <IconButton
                     aria-label="share"

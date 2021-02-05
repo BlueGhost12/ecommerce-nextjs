@@ -12,25 +12,25 @@ const DataProvider = (props) => {
     const [totalCost, setTotalCost] = useState(0.0);
     const [subtotalCost, setSubtotalCost] = useState(0.0);
 
+
     // initial product fetching
     useEffect(() => {
         const fetchProducts = async () => {
             return await axios.get(`${server}/api/products`);
         };
-        fetchProducts().then((res) => {
-            setAllProducts(res.data);
-        });
+        fetchProducts().then((res) => setAllProducts(res.data));
     }, []);
 
     // updating initial state of local storage
     useEffect(() => {
+
         localStorage.getItem('cart')
             ? setCart(JSON.parse(localStorage.getItem('cart')))
             : null;
         localStorage.getItem('cartItemQuantity')
             ? setCartItemQuantity(
-                  JSON.parse(localStorage.getItem('cartItemQuantity'))
-              )
+            JSON.parse(localStorage.getItem('cartItemQuantity'))
+            )
             : null;
         updateCartCost(cart);
     }, []);
@@ -46,7 +46,8 @@ const DataProvider = (props) => {
         localStorage.setItem('subTotalCost', JSON.stringify(subtotalCost));
         localStorage.setItem('totalCost', JSON.stringify(totalCost));
         localStorage.setItem('tax', JSON.stringify(tax));
-    }, [cart, cartItemQuantity, subtotalCost, totalCost, tax]);
+    }, [cart, cartItemQuantity, subtotalCost, totalCost, tax, allProducts]);
+
 
     const updateProductStock = (product, quantity) => {
         let productInstance = allProducts;
@@ -146,7 +147,7 @@ const DataProvider = (props) => {
         const productItem = allProducts.find(
             (product) => cartProduct.id === product.id
         );
-        return productItem.instance > 0;
+        return (productItem && productItem.instance > 0) || true;
     };
 
     const emptyCart = () => {
