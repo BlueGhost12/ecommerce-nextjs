@@ -8,14 +8,24 @@ export default function Home() {
     const { allProducts, setAllProducts } = dataContext;
     const renderedProducts = allProducts.map((product) => {
         return (
-            <Grid item container justify="center" xs={3} key={product.id}>
+            <Grid
+                item
+                container
+                justify="center"
+                xl={3} //4
+                lg={3} //4
+                md={4} //2
+                sm={6} //1
+                xs={12} //1
+                key={product.id}
+            >
                 <Product product={product} />
             </Grid>
         );
     });
     return (
         <>
-            <Grid container style={{ paddingTop: '2rem' }}>
+            <Grid container style={{ paddingTop: '1rem' }}>
                 {renderedProducts}
             </Grid>
         </>

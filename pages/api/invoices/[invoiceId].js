@@ -16,7 +16,6 @@ export default async function handler({ query: { invoiceId }, method }, res) {
         const invoice = result.data.find(
             (invoice) => invoice.invoiceId.toString() === invoiceId.toString()
         );
-        console.log(invoice);
         !!invoice
             ? res.status(200).json(invoice)
             : res.status(200).json({ message: 'Invoice not found' });

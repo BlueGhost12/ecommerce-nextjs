@@ -1,5 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { useFormik } from 'formik';
+import Link from 'next/link';
 import {
     Button,
     Card,
@@ -74,7 +75,14 @@ const Checkout = () => {
     const classes = useStyles();
     const router = useRouter();
     const dataContext = useContext(DataContext);
-    const { cart, subtotalCost, tax, totalCost } = dataContext;
+    const {
+        cart,
+        subtotalCost,
+        tax,
+        totalCost,
+        emptyCart,
+        cartItemQuantity,
+    } = dataContext;
 
     function getDate() {
         let today = new Date();
@@ -85,6 +93,7 @@ const Checkout = () => {
         return today;
     }
 
+    // handing initial states, errors and on submission for forms
     const formik = useFormik({
         initialValues,
         onSubmit: async (values) => {
@@ -113,6 +122,17 @@ const Checkout = () => {
                 data: JSON.stringify(invoice),
             });
             console.log('Invoice created!');
+
+            const updateProducts = await axios({
+                method: 'PUT',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                url: `${server}/api/update`,
+                data: JSON.stringify(cart),
+            });
+            emptyCart();
             router
                 .push(
                     `/orderDetails/${encodeURIComponent(result.data.invoiceId)}`
@@ -122,7 +142,7 @@ const Checkout = () => {
         validate,
     });
 
-    return (
+    return !!cartItemQuantity ? (
         <Card className={classes.root}>
             <CardContent>
                 <Typography
@@ -131,7 +151,7 @@ const Checkout = () => {
                     className={classes.text}
                     variant="h5"
                 >
-                    Personal Information
+                    Delivery Information
                 </Typography>
                 <form
                     noValidate
@@ -217,6 +237,19 @@ const Checkout = () => {
                 </form>
             </CardContent>
         </Card>
+    ) : (
+        <Typography
+            align={'center'}
+            variant="h3"
+            gutterBottom
+            style={{ marginTop: '4rem' }}
+        >
+            Shop for items{' '}
+            <Link href="/">
+                <span style={{ color: 'blue', cursor: 'pointer' }}>here</span>
+            </Link>{' '}
+            before checking out
+        </Typography>
     );
 };
 

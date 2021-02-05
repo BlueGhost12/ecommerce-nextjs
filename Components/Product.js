@@ -20,6 +20,7 @@ const useStyles = makeStyles((theme) => ({
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'space-between',
+        margin: '1rem 0rem',
     },
     media: {
         height: '12rem',

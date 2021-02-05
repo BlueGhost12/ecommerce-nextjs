@@ -103,7 +103,6 @@ export async function getServerSideProps(context) {
         `${server}/api/invoices/${encodeURIComponent(context.params.invoiceId)}`
     );
     JSONinvoice = JSONinvoice.data;
-    // console.log(JSONinvoice);
     return {
         props: {
             ...JSONinvoice,

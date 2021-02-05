@@ -12,20 +12,41 @@ const DataProvider = (props) => {
     const [totalCost, setTotalCost] = useState(0.0);
     const [subtotalCost, setSubtotalCost] = useState(0.0);
 
+    // initial product fetching
     useEffect(() => {
         const fetchProducts = async () => {
-            // console.log(server);
             return await axios.get(`${server}/api/products`);
         };
         fetchProducts().then((res) => {
             setAllProducts(res.data);
-            console.log(allProducts);
         });
     }, []);
 
+    // updating initial state of local storage
     useEffect(() => {
+        localStorage.getItem('cart')
+            ? setCart(JSON.parse(localStorage.getItem('cart')))
+            : null;
+        localStorage.getItem('cartItemQuantity')
+            ? setCartItemQuantity(
+                  JSON.parse(localStorage.getItem('cartItemQuantity'))
+              )
+            : null;
         updateCartCost(cart);
-    }, [cart]);
+    }, []);
+
+    // updating local storage on cart changes
+    useEffect(() => {
+        localStorage.setItem('cart', JSON.stringify(cart));
+        localStorage.setItem(
+            'cartItemQuantity',
+            JSON.stringify(cartItemQuantity)
+        );
+        updateCartCost(cart);
+        localStorage.setItem('subTotalCost', JSON.stringify(subtotalCost));
+        localStorage.setItem('totalCost', JSON.stringify(totalCost));
+        localStorage.setItem('tax', JSON.stringify(tax));
+    }, [cart, cartItemQuantity, subtotalCost, totalCost, tax]);
 
     const updateProductStock = (product, quantity) => {
         let productInstance = allProducts;
@@ -39,20 +60,16 @@ const DataProvider = (props) => {
 
     const updateCartCost = (cart) => {
         let sum = 0;
-        console.log(cart);
         cart.forEach((item) => {
             sum += item.subtotal;
         });
         setSubtotalCost(Math.floor(sum * 100) / 100);
-        console.log(subtotalCost);
         const taxOnProducts = subtotalCost * 0.1;
         setTax(Math.floor(taxOnProducts * 100) / 100);
-        console.log(tax);
         setTotalCost(Math.floor((subtotalCost + taxOnProducts) * 100) / 100);
-        console.log(totalCost);
     };
 
-    const addProductToCart = async (product) => {
+    const addProductToCart = (product) => {
         if (cart.find((cartItem) => cartItem.id === product.id)) {
             // adding another instance of product to cart
             let cartInstance = [...cart];
@@ -76,9 +93,7 @@ const DataProvider = (props) => {
                 subtotal: product.price,
             };
             setCart(() => [...cart, newCartProduct]);
-            console.log(cart);
         }
-        // updateCartCost(cart);
         setCartItemQuantity((prevCount) => prevCount + 1);
         updateProductStock(product, -1);
     };
@@ -131,7 +146,7 @@ const DataProvider = (props) => {
         const productItem = allProducts.find(
             (product) => cartProduct.id === product.id
         );
-        return productItem.stock > 0;
+        return productItem.instance > 0;
     };
 
     const emptyCart = () => {
@@ -141,6 +156,7 @@ const DataProvider = (props) => {
     };
 
     const dataContext = {
+        emptyCart,
         subtotalCost,
         totalCost,
         tax,

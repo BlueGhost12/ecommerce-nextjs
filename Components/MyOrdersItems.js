@@ -20,7 +20,7 @@ const MyOrdersItem = ({ invoice }) => {
     const classes = useStyles();
     return (
         <Link href={`/orderDetails/${encodeURIComponent(invoice.invoiceId)}`}>
-            <Paper className={classes.paper}>
+            <Paper className={classes.paper} style={{ cursor: 'pointer' }}>
                 <Grid container wrap="nowrap" spacing={2}>
                     <Grid item>
                         <Typography variant="caption" display="inline">
