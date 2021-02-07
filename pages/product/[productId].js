@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext } from 'react';
 import * as path from 'path';
 import { Button, Grid, makeStyles, Paper } from '@material-ui/core';
 import Typography from '@material-ui/core/Typography';
@@ -34,16 +34,8 @@ const useStyles = makeStyles((theme) => ({
 
 const ProductDetails = ({ productDetails }) => {
     const dataContext = useContext(DataContext);
-    const { addProductToCart, allProducts } = dataContext;
-    const [thisProduct, setThisProduct] = useState(productDetails);
+    const { addProductToCart, isStockAvailable } = dataContext;
     const classes = useStyles();
-
-    useEffect(() => {
-        const item = allProducts.find(
-            (product) => product.id === productDetails.id
-        );
-        setThisProduct(item);
-    }, [allProducts]);
     return (
         <div className={classes.root}>
             <Paper className={classes.paper}>
@@ -79,7 +71,7 @@ const ProductDetails = ({ productDetails }) => {
                                         variant="subtitle2"
                                         gutterBottom
                                     >
-                                        Availability : {thisProduct.stock}
+                                        Availability : {productDetails.stock}
                                     </Typography>
                                     <Typography
                                         variant="subtitle2"
@@ -100,9 +92,9 @@ const ProductDetails = ({ productDetails }) => {
                                     variant="contained"
                                     color="primary"
                                     onClick={() =>
-                                        addProductToCart(thisProduct)
+                                        addProductToCart(productDetails)
                                     }
-                                    disabled={!thisProduct.stock}
+                                    disabled={isStockAvailable(productDetails.id)}
                                 >
                                     <AddShoppingCartIcon
                                         className={classes.buttons}

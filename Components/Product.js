@@ -47,7 +47,7 @@ const useStyles = makeStyles((theme) => ({
 
 const Product = ({ product }) => {
     const dataContext = useContext(DataContext);
-    const { addProductToCart } = dataContext;
+    const { addProductToCart, isStockAvailable } = dataContext;
 
     const classes = useStyles();
 
@@ -83,7 +83,7 @@ const Product = ({ product }) => {
                 <IconButton
                     aria-label="share"
                     onClick={() => addProductToCart(product)}
-                    disabled={!product.stock}
+                    disabled={isStockAvailable(product.id)}
                 >
                     <AddShoppingCartIcon />
                 </IconButton>

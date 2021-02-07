@@ -19,7 +19,7 @@ const DataProvider = (props) => {
             return await axios.get(`${server}/api/products`);
         };
         fetchProducts().then((res) => setAllProducts(res.data));
-    }, []);
+    }, [cart]);
 
     // updating initial state of local storage
     useEffect(() => {
@@ -47,17 +47,6 @@ const DataProvider = (props) => {
         localStorage.setItem('totalCost', JSON.stringify(totalCost));
         localStorage.setItem('tax', JSON.stringify(tax));
     }, [cart, cartItemQuantity, subtotalCost, totalCost, tax, allProducts]);
-
-
-    const updateProductStock = (product, quantity) => {
-        let productInstance = allProducts;
-        productInstance.forEach((item) => {
-            if (item === product) {
-                item.stock += quantity;
-            }
-        });
-        setAllProducts(productInstance);
-    };
 
     const updateCartCost = (cart) => {
         let sum = 0;
@@ -96,7 +85,6 @@ const DataProvider = (props) => {
             setCart(() => [...cart, newCartProduct]);
         }
         setCartItemQuantity((prevCount) => prevCount + 1);
-        updateProductStock(product, -1);
     };
 
     const removeFromCart = (cartProduct) => {
@@ -112,7 +100,6 @@ const DataProvider = (props) => {
         const productItem = allProducts.find(
             (product) => cartProduct.id === product.id
         );
-        updateProductStock(productItem, cartProduct.instance);
     };
 
     const updateCart = (cartProduct, quantity) => {
@@ -135,12 +122,6 @@ const DataProvider = (props) => {
         setCart(() => cartInstance);
         setCartItemQuantity((prevCount) => prevCount + quantity);
         updateCartCost(cart);
-
-        // Adding stock to products
-        const productItem = allProducts.find(
-            (product) => cartProduct.id === product.id
-        );
-        updateProductStock(productItem, -quantity);
     };
 
     const isProductAvailable = (cartProduct) => {
@@ -150,6 +131,16 @@ const DataProvider = (props) => {
         return (productItem && productItem.instance > 0) || true;
     };
 
+    const isStockAvailable = (id) => {
+        const cartProduct = cart.find(prod => prod.id === id);
+        const product = allProducts.find(prod => prod.id === id);
+        cartProduct && product ? console.log(cartProduct.instance, product.stock) : null;
+        if(product && product.stock === 0) return true;
+        else if(cartProduct && product && cartProduct.instance === product.stock) return true;
+        else if(!cartProduct && product && product.stock > 0) return false;
+        else return false;
+    }
+
     const emptyCart = () => {
         setCart([]);
         setCartItemQuantity(0);
@@ -157,6 +148,7 @@ const DataProvider = (props) => {
     };
 
     const dataContext = {
+        isStockAvailable,
         emptyCart,
         subtotalCost,
         totalCost,

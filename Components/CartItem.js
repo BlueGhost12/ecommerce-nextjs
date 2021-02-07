@@ -17,7 +17,7 @@ const useStyles = makeStyles({
 
 const CartItem = ({ item }) => {
     const dataContext = useContext(DataContext);
-    const { isProductAvailable, updateCart, removeFromCart } = dataContext;
+    const { isStockAvailable, updateCart, removeFromCart } = dataContext;
     const classes = useStyles();
     return (
         <TableRow
@@ -60,7 +60,7 @@ const CartItem = ({ item }) => {
                 <IconButton
                     aria-label="share"
                     onClick={() => updateCart(item, 1)}
-                    disabled={!isProductAvailable(item)}
+                    disabled={isStockAvailable(item.id)}
                 >
                     <AddIcon />
                 </IconButton>
