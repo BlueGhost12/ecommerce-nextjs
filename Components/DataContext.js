@@ -124,17 +124,22 @@ const DataProvider = (props) => {
         updateCartCost(cart);
     };
 
-    const isProductAvailable = (cartProduct) => {
-        const productItem = allProducts.find(
-            (product) => cartProduct.id === product.id
-        );
-        return (productItem && productItem.instance > 0) || true;
-    };
+    // const isProductAvailable = (cartProduct) => {
+    //     const productItem = allProducts.find(
+    //         (product) => cartProduct.id === product.id
+    //     );
+    //     return (productItem && productItem.instance > 0) || true;
+    // };
+
+    const isProductAvailableInDatabase = async (id) => {
+        const products = await axios.get(`${server}/api/products/${id}`);
+        console.log(products);
+    }
 
     const isStockAvailable = (id) => {
         const cartProduct = cart.find(prod => prod.id === id);
         const product = allProducts.find(prod => prod.id === id);
-        cartProduct && product ? console.log(cartProduct.instance, product.stock) : null;
+        // cartProduct && product ? console.log(cartProduct.instance, product.stock) : null;
         if(product && product.stock === 0) return true;
         else if(cartProduct && product && cartProduct.instance === product.stock) return true;
         else if(!cartProduct && product && product.stock > 0) return false;
@@ -147,13 +152,18 @@ const DataProvider = (props) => {
         updateCartCost(cart);
     };
 
+    const updateCartQuantity = (quantity) => {
+        setCartItemQuantity(quantity)
+    }
+
     const dataContext = {
+        updateCartQuantity,
+        setCartItemQuantity,
         isStockAvailable,
         emptyCart,
         subtotalCost,
         totalCost,
         tax,
-        isProductAvailable,
         updateCart,
         updateCartCost,
         removeFromCart,

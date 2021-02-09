@@ -4,6 +4,8 @@ import Typography from '@material-ui/core/Typography';
 import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
 import { DataContext } from './DataContext';
 import { useRouter } from 'next/router';
+import axios from "axios";
+import { server } from "../Config";
 
 const useStyles = makeStyles((theme) => ({
     footerRoot: {
@@ -30,16 +32,31 @@ const useStyles = makeStyles((theme) => ({
 
 const CardFooter = () => {
     const dataContext = useContext(DataContext);
-    const { tax, totalCost, subtotalCost, updateCartCost, cart } = dataContext;
+    const { tax, totalCost, subtotalCost, updateCartCost, cart, setCart, updateCartQuantity } = dataContext;
     const classes = useStyles();
     const router = useRouter();
     useEffect(() => {
         updateCartCost(cart);
     }, [cart]);
 
-    function handleClick(event) {
+    const handleClick = async (event) =>{
         event.preventDefault();
-        router.push('/checkout').then();
+        const result = await axios({
+            method: 'POST',
+            headers: {
+                Accept: 'application/json',
+                'Content-Type': 'application/json',
+            },
+            url: `${server}/api/isAvailable`,
+            data: JSON.stringify(cart),
+        });
+        console.log(result.data);
+        if(!!result.data.hasChanged){
+            alert('Some items in your cart have been updated due to stock unavailability');
+            setCart(() => result.data.updatedCart);
+            updateCartQuantity(result.data.quantity);
+            updateCartCost(cart);
+        }else router.push('/checkout').then();
     }
 
     return (

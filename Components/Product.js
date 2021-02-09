@@ -53,29 +53,29 @@ const Product = ({ product }) => {
 
     return (
         <Card className={classes.card} variant="outlined">
-            <CardActionArea>
-                <Link href={`/product/${encodeURIComponent(product.id)}`}>
+            <Link href={`/product/${encodeURIComponent(product.id)}`}>
+                <CardActionArea>
                     <CardMedia
                         className={classes.media}
                         image={product.picture}
                         title={product.title}
                     />
-                </Link>
-                <CardContent>
-                    <Typography gutterBottom variant="h5" component="h2">
-                        {product.title}
-                    </Typography>
-                    <Typography
-                        variant="body2"
-                        color="textSecondary"
-                        component="p"
-                    >
-                        {product.description.length > 100
-                            ? product.description.substring(0, 100) + '...'
-                            : product.description}
-                    </Typography>
-                </CardContent>
-            </CardActionArea>
+                    <CardContent>
+                        <Typography gutterBottom variant="h5" component="h2">
+                            {product.title}
+                        </Typography>
+                        <Typography
+                            variant="body2"
+                            color="textSecondary"
+                            component="p"
+                        >
+                            {product.description.length > 100
+                                ? product.description.substring(0, 100) + '...'
+                                : product.description}
+                        </Typography>
+                    </CardContent>
+                </CardActionArea>
+            </Link>
             <CardActions className={classes.interactions}>
                 <Typography className={classes.productStatus}>
                     Price: ${product.price}
